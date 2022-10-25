@@ -1,5 +1,5 @@
 // App.js
-import { Authenticator } from "@aws-amplify/ui-react";
+import { Button, Flex, TextField, View, withAuthenticator } from "@aws-amplify/ui-react";
 import '@aws-amplify/ui-react/styles.css';
 import { Amplify, Auth } from "aws-amplify";
 import React, { useState } from "react";
@@ -31,33 +31,38 @@ async function verifyEmailValidationCode (code) {
 function ValidationCodeForm() {
   const [validationCode, setValidationCode] = useState(null)
   return(
-    <div>
-      <label>
-        Verification Code (sent to the new email):
-        <input onChange={(e) => { setValidationCode(e.target.value)}} type="text" name="vc" />
-      </label>
-      <button onClick={() => verifyEmailValidationCode(validationCode)}>Send Code</button>
-    </div>
+    <Flex>
+      <View>
+        <TextField
+          descriptiveText="Enter the validation code sent to the new email address"
+          label="Verification Code"
+          onChange={(e) => setValidationCode(e.currentTarget.value)}
+        />
+        <Button onClick={() => verifyEmailValidationCode(validationCode)}>Submit Validation Code</Button>
+      </View>
+    </Flex>
   )
 }
 
-export default function App() {
+function App({ signOut, user }) {
   const [showValidationCodeUI, setShowValidationCodeUI] = useState(false)
   return (
-    <Authenticator>
-      {({ signOut, user }) => (
-        <div className="App">
-          <h2>
-            Welcome {user.attributes.email}
-          </h2>
+      <div className="App">
+        <h2>
+          Welcome {user.attributes.email}
+        </h2>
+
+        <ValidationCodeForm />
+        <View>
           {showValidationCodeUI === false && <button onClick={async () => {
             await updateUserEmail()
             setShowValidationCodeUI(true)
           }}>Update Email</button>}
           {showValidationCodeUI === true && <ValidationCodeForm />}
-          <button onClick={signOut}>Sign out</button>
-        </div>
-      )}
-    </Authenticator>
+          <Button onClick={signOut}>Sign out</Button>
+        </View>
+      </div>
   );
 }
+
+export default withAuthenticator(App)
