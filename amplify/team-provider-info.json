@@ -9,6 +9,11 @@
       "UnauthRoleName": "amplify-202210250938amplifyc-dev-93854-unauthRole",
       "StackName": "amplify-202210250938amplifyc-dev-93854",
       "StackId": "arn:aws:cloudformation:us-east-1:074128318641:stack/amplify-202210250938amplifyc-dev-93854/c12d74a0-5472-11ed-850d-0a8772fee84d"
+    },
+    "categories": {
+      "auth": {
+        "202210250938amplifyc9578e102": {}
+      }
     }
   }
 }
