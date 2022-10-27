@@ -47,7 +47,7 @@ function ValidationCodeForm() {
 function App({ signOut, user }) {
   const [showValidationCodeUI, setShowValidationCodeUI] = useState(false)
   return (
-      <div className="App">
+      <div>
         <h2>
           Welcome {user.attributes.email}
         </h2>
