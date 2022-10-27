@@ -1,5 +1,5 @@
 // App.js
-import { Button, Flex, TextField, View, withAuthenticator } from "@aws-amplify/ui-react";
+import { Button, Flex, Heading, TextField, View, withAuthenticator } from "@aws-amplify/ui-react";
 import '@aws-amplify/ui-react/styles.css';
 import { Amplify, Auth } from "aws-amplify";
 import React, { useState } from "react";
@@ -11,7 +11,7 @@ Amplify.configure(awsconfig)
 async function updateUserEmail () {
   const user = await Auth.currentAuthenticatedUser();
   await Auth.updateUserAttributes(user, {
-     'email': 'updatedEmail@mydomain.com',
+     'email': 'kevold+updated@amazon.com',
   }).then(() => {
      console.log('a verification code is sent');
   }).catch((e) => {
@@ -46,22 +46,26 @@ function ValidationCodeForm() {
 
 function App({ signOut, user }) {
   const [showValidationCodeUI, setShowValidationCodeUI] = useState(false)
-  return (
-      <div>
-        <h2>
-          Welcome {user.attributes.email}
-        </h2>
 
-        <ValidationCodeForm />
-        <View>
-          {showValidationCodeUI === false && <button onClick={async () => {
-            await updateUserEmail()
-            setShowValidationCodeUI(true)
-          }}>Update Email</button>}
-          {showValidationCodeUI === true && <ValidationCodeForm />}
+  async function triggerUpdateUserEmail () {
+    await updateUserEmail()
+    setShowValidationCodeUI(true)
+  }
+
+  return (
+      <View margin={50}>
+        <Flex marginBottom={50}>
+          <Heading level={2}>
+            Welcome {user.attributes.email}
+          </Heading>
           <Button onClick={signOut}>Sign out</Button>
+        </Flex>
+
+        <View>
+          {!showValidationCodeUI && <Button onClick={triggerUpdateUserEmail}>Update Email</Button>}
+          {showValidationCodeUI && <ValidationCodeForm />}
         </View>
-      </div>
+      </View>
   );
 }
 
