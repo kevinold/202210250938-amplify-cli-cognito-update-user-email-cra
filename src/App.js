@@ -8,10 +8,11 @@ import awsconfig from "./aws-exports";
 
 Amplify.configure(awsconfig)
 
-async function updateUserEmail () {
+async function updateUserEmail (newEmail) {
   const user = await Auth.currentAuthenticatedUser();
   await Auth.updateUserAttributes(user, {
-     'email': 'kevold+updated@amazon.com',
+    'email': newEmail
+     //'email': 'kevold+updated@amazon.com',
   }).then(() => {
      console.log('a verification code is sent');
   }).catch((e) => {
@@ -30,6 +31,13 @@ async function verifyEmailValidationCode (code) {
 
 function ValidationCodeForm() {
   const [validationCode, setValidationCode] = useState(null)
+
+  if (validationCode) {
+    return (
+      <Heading level={2}>Email verified!</Heading>
+    )
+  }
+
   return(
     <Flex>
       <View>
@@ -44,13 +52,30 @@ function ValidationCodeForm() {
   )
 }
 
-function App({ signOut, user }) {
-  const [showValidationCodeUI, setShowValidationCodeUI] = useState(false)
+function UpdateEmailForm({ setShowValidationCodeUI }) {
+  const [email, setEmail] = useState(null)
 
   async function triggerUpdateUserEmail () {
-    await updateUserEmail()
+    await updateUserEmail(email)
     setShowValidationCodeUI(true)
   }
+
+  return(
+    <Flex>
+      <View>
+        <TextField
+          descriptiveText="Enter the new email address"
+          label="Email Address"
+          onChange={(e) => setEmail(e.currentTarget.value)}
+        />
+        <Button onClick={triggerUpdateUserEmail}>Update Email</Button>
+      </View>
+    </Flex>
+  )
+}
+
+function App({ signOut, user }) {
+  const [showValidationCodeUI, setShowValidationCodeUI] = useState(false)
 
   return (
       <View margin={50}>
@@ -62,7 +87,7 @@ function App({ signOut, user }) {
         </Flex>
 
         <View>
-          {!showValidationCodeUI && <Button onClick={triggerUpdateUserEmail}>Update Email</Button>}
+          {!showValidationCodeUI && <UpdateEmailForm setShowValidationCodeUI={setShowValidationCodeUI} />}
           {showValidationCodeUI && <ValidationCodeForm />}
         </View>
       </View>
