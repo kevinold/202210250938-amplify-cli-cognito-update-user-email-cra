@@ -1,18 +1,13 @@
 // App.js
 import { Button, Flex, Heading, TextField, View, withAuthenticator } from "@aws-amplify/ui-react";
 import '@aws-amplify/ui-react/styles.css';
-import { Amplify, Auth } from "aws-amplify";
+import { Auth } from "aws-amplify";
 import React, { useState } from "react";
-
-import awsconfig from "./aws-exports";
-
-Amplify.configure(awsconfig)
 
 async function updateUserEmail (newEmail) {
   const user = await Auth.currentAuthenticatedUser();
   await Auth.updateUserAttributes(user, {
     'email': newEmail
-     //'email': 'kevold+updated@amazon.com',
   }).then(() => {
      console.log('a verification code is sent');
   }).catch((e) => {
