@@ -27,12 +27,6 @@ async function verifyEmailValidationCode (code) {
 function ValidationCodeForm() {
   const [validationCode, setValidationCode] = useState(null)
 
-  if (validationCode) {
-    return (
-      <Heading level={2}>Email verified!</Heading>
-    )
-  }
-
   return(
     <Flex>
       <View>
