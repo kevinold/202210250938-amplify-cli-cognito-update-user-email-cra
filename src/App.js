@@ -1,5 +1,5 @@
 // App.js
-import { Button, Flex, Heading, TextField, View, withAuthenticator } from "@aws-amplify/ui-react";
+import { Button, Flex, Heading, Text, TextField, View, withAuthenticator } from "@aws-amplify/ui-react";
 import '@aws-amplify/ui-react/styles.css';
 import { Auth } from "aws-amplify";
 import React, { useState } from "react";
@@ -15,16 +15,18 @@ async function updateUserEmail (newEmail) {
   });
 }
 
-async function verifyEmailValidationCode (code) {
-  await Auth.verifyCurrentUserAttributeSubmit('email', code)
+async function verifyEmailValidationCode ({ validationCode, setShowValidationCodeUI, setEmailVerified} ) {
+  await Auth.verifyCurrentUserAttributeSubmit('email', validationCode)
   .then(() => {
      console.log('email verified');
+     setShowValidationCodeUI(false)
+     setEmailVerified(true)
   }).catch((e) => {
      console.log('failed with error', e);
   });
 }
 
-function ValidationCodeForm() {
+function ValidationCodeForm({ setShowValidationCodeUI, setEmailVerified }) {
   const [validationCode, setValidationCode] = useState(null)
 
   return(
@@ -35,7 +37,7 @@ function ValidationCodeForm() {
           label="Verification Code"
           onChange={(e) => setValidationCode(e.currentTarget.value)}
         />
-        <Button onClick={() => verifyEmailValidationCode(validationCode)}>Submit Validation Code</Button>
+        <Button onClick={() => verifyEmailValidationCode({validationCode, setShowValidationCodeUI, setEmailVerified})}>Submit Validation Code</Button>
       </View>
     </Flex>
   )
@@ -65,6 +67,7 @@ function UpdateEmailForm({ setShowValidationCodeUI }) {
 
 function App({ signOut, user }) {
   const [showValidationCodeUI, setShowValidationCodeUI] = useState(false)
+  const [emailVerified, setEmailVerified] = useState(false)
 
   return (
       <View margin={50}>
@@ -76,8 +79,9 @@ function App({ signOut, user }) {
         </Flex>
 
         <View>
+          {emailVerified && <View margin={50}><Text>Email Verified!</Text></View>}
           {!showValidationCodeUI && <UpdateEmailForm setShowValidationCodeUI={setShowValidationCodeUI} />}
-          {showValidationCodeUI && <ValidationCodeForm />}
+          {showValidationCodeUI && <ValidationCodeForm setShowValidationCodeUI={setShowValidationCodeUI} setEmailVerified={setEmailVerified} />}
         </View>
       </View>
   );
