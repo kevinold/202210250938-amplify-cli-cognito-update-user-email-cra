@@ -17,8 +17,14 @@ async function updateUserEmail (newEmail) {
 
 async function verifyEmailValidationCode ({ validationCode, setShowValidationCodeUI} ) {
   await Auth.verifyCurrentUserAttributeSubmit('email', validationCode)
-  .then(() => {
+  .then(async () => {
      console.log('email verified');
+     Auth.currentUserPoolUser({ bypassCache: true } )
+     .then((verifiedUser) => {
+       console.log({ verifiedUser })
+     }).catch((e) => {
+         console.log('failed with error', e);
+     });
      setShowValidationCodeUI(false)
   }).catch((e) => {
      console.log('failed with error', e);
@@ -66,6 +72,7 @@ function UpdateEmailForm({ setShowValidationCodeUI }) {
 
 function App({ signOut, user }) {
   const [showValidationCodeUI, setShowValidationCodeUI] = useState(false)
+  console.log({ user })
 
   return (
       <View margin={50}>
