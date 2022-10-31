@@ -77,7 +77,11 @@ function App({ signOut, user }) {
         </Flex>
 
         <View>
-          {user.attributes.email_verified && <Heading level={3} margin={"50px 0px"} color={"green"}>Email Verified!</Heading>}
+          
+          {
+          // This attribute remains false after email is update until the user logs out then in again
+          user.attributes.email_verified
+          && <Heading level={3} margin={"50px 0px"} color={"green"}>Email Verified!</Heading>}
           {!showValidationCodeUI && <UpdateEmailForm setShowValidationCodeUI={setShowValidationCodeUI} />}
           {showValidationCodeUI && <ValidationCodeForm setShowValidationCodeUI={setShowValidationCodeUI} />}
         </View>
