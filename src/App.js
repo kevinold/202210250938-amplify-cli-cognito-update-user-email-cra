@@ -66,7 +66,6 @@ function UpdateEmailForm({ setShowValidationCodeUI }) {
 
 function App({ signOut, user }) {
   const [showValidationCodeUI, setShowValidationCodeUI] = useState(false)
-  console.log({ user })
 
   return (
       <View margin={50}>
