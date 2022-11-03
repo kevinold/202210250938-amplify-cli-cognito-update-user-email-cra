@@ -1,5 +1,5 @@
 // App.js
-import { Button, Flex, Heading, TextField, View, withAuthenticator } from "@aws-amplify/ui-react";
+import { Button, Flex, Heading, Text, TextField, useAuthenticator, View, withAuthenticator } from "@aws-amplify/ui-react";
 import '@aws-amplify/ui-react/styles.css';
 import { Auth } from "aws-amplify";
 import React, { useState } from "react";
@@ -70,25 +70,24 @@ function UpdateEmailForm({ setShowValidationCodeUI }) {
   )
 }
 
-function App({ signOut, user }) {
+function App() {
+  const { user, signOut } = useAuthenticator((context) => [context.user]);
   const [showValidationCodeUI, setShowValidationCodeUI] = useState(false)
   console.log({ user })
 
   return (
       <View margin={50}>
-        <Flex marginBottom={50}>
-          <Heading level={2}>
+        <Flex alignItems={"center"} marginBottom={50} gap={3}>
+          <Heading level={5}>
             Welcome {user.attributes.email}
           </Heading>
+          { user.attributes.email_verified
+          ? <Text color={"green"}>(verified)</Text>
+          : <Text color={"red"}>(not verified)</Text>}
           <Button onClick={signOut}>Sign out</Button>
         </Flex>
 
         <View>
-          
-          {
-          // This attribute remains false after email is update until the user logs out then in again
-          user.attributes.email_verified
-          && <Heading level={3} margin={"50px 0px"} color={"green"}>Email Verified!</Heading>}
           {!showValidationCodeUI && <UpdateEmailForm setShowValidationCodeUI={setShowValidationCodeUI} />}
           {showValidationCodeUI && <ValidationCodeForm setShowValidationCodeUI={setShowValidationCodeUI} />}
         </View>
